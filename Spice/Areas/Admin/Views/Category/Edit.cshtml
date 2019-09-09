@@ -21,7 +21,11 @@
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="col-5 offset-2">
-           <partial name="_EditAndBackToListButton" model="Model.Id" />
+            <partial name="_EditAndBackToListButton" model="Model.Id" />
         </div>
     </div>
 </form>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
