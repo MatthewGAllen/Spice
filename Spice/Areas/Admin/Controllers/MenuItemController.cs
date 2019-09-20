@@ -169,9 +169,7 @@ namespace Spice.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
             MenuItemVM.MenuItem = await _db.MenuItem.Include(m => m.Category).Include(m => m.SubCategory).SingleOrDefaultAsync(m => m.Id == id);
-            
             if (MenuItemVM.MenuItem == null)
             {
                 return NotFound();
@@ -203,14 +201,20 @@ namespace Spice.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePOST(int? id)
         {
-            var menuItem = await _db.MenuItem.Include(m => m.Category).Include(m => m.SubCategory).SingleOrDefaultAsync(m => m.Id == id);
-            if(menuItem == null)
-            {
-                return View();
+            string webRootPath = _hostingEnvironment.WebRootPath;
+            var menuItem = await _db.MenuItem.FindAsync(id);
+            if(menuItem != null)
+            { 
+                //Deletes the image
+                var imagePath = Path.Combine(webRootPath, menuItem.Image.TrimStart('\\'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+                //Deletes the rest of the image
+                _db.MenuItem.Remove(menuItem);
+                await _db.SaveChangesAsync();
             }
-
-            _db.MenuItem.Remove(menuItem);
-            await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }

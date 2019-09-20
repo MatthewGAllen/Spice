@@ -15,7 +15,6 @@ namespace Spice.Models
         public string Description { get; set; }
         public string Spicyness { get; set; }
         public enum ESpicy { NA=0, NotSpicy=1, Spicy=2, VerySpicy=3 }
-
         public string Image { get; set; }
         [Display(Name="Category")]
         public int CategoryId { get; set; }
